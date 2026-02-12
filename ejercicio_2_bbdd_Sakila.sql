@@ -34,7 +34,7 @@ WHERE last_name LIKE '%gibson%';
 SELECT first_name, last_name FROM actor
 WHERE actor_id BETWEEN 10 AND 20;
 
--- otra forma de hacerlo al ser una variable de tipo INT es con mayor/menor: 
+-- 7.02 otra forma de hacerlo al ser una variable de tipo INT es con mayor/menor: 
 SELECT first_name, last_name 
 FROM actor 
 WHERE actor_id >= 10 AND actor_id <= 20;
@@ -43,4 +43,63 @@ WHERE actor_id >= 10 AND actor_id <= 20;
 SELECT title FROM film 
 WHERE rating NOT IN ('R', 'PG-13');
 
--- 9. Número de películas por clasificación:
+-- 9. Número de películas por clasificación
+SELECT rating, COUNT(*) AS films FROM film 
+GROUP BY rating 
+ORDER BY films DESC;
+
+-- 10. Cantidad de peliculas alquiladas por cliente. 
+SELECT c.customer_id, c.first_name, c.last_name, COUNT(r.rental_id) AS total_rents FROM customer AS c
+LEFT JOIN rental AS r ON c.customer_id = r.customer_id
+GROUP BY c.customer_id, c.first_name, c.last_name
+ORDER BY total_rents DESC;
+
+-- 11. Cantidad de películas alquiladas por categoría
+SELECT 
+    c.name AS genre, COUNT(r.rental_id) AS total_rents
+FROM category AS c
+LEFT JOIN film_category AS fc ON c.category_id = fc.category_id
+LEFT JOIN inventory AS i ON fc.film_id = i.film_id
+LEFT JOIN rental AS r ON i.inventory_id = r.inventory_id
+GROUP BY genre
+ORDER BY total_rents DESC;
+
+-- 12. Promedio duración películas por clasificación
+SELECT rating, AVG(length) AS length FROM film 
+GROUP BY rating
+ORDER BY length DESC;
+
+-- 13. Nombre y apellidos de los actores que aparecen en la película "Indian Love"
+SELECT first_name, last_name
+FROM actor
+WHERE actor_id IN (
+    SELECT actor_id 
+    FROM film_actor 
+    WHERE film_id = (
+        SELECT film_id 
+        FROM film 
+        WHERE title = 'Indian Love'
+    )
+);
+
+-- 13.02. Propuesta con JOINs
+SELECT a.first_name, a.last_name
+FROM actor AS a
+JOIN film_actor AS fa ON a.actor_id = fa.actor_id
+JOIN film  AS f ON fa.film_id = f.film_id
+WHERE f.title = 'Indian Love';
+
+-- 14. Selección del título de las películas que contengan "dog" o "cat" en su descripción
+SELECT title FROM film
+WHERE description LIKE '%cat%' OR description LIKE '%dog%';
+
+-- 14.02 Otra forma de hacerlo sería con UNION
+SELECT title FROM film
+WHERE description LIKE '%cat%' 
+UNION
+SELECT title FROM film
+WHERE description LIKE '%dog%';
+
+-- 15. Películas lanzadas entre 2005 y 2010
+SELECT title, release_year FROM film
+WHERE release_year BETWEEN 2005 AND 2010;
