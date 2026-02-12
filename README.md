@@ -83,4 +83,4 @@ Durante el desarrollo del proyecto se han identificado las siguientes áreas de 
   - Optimización del código: El script de inserción actual utiliza bucles anidados. Se plantea refactorizar esta lógica para mejorar la eficiencia y limpieza del código.
   - Documentación en inglés: El objetivo a corto plazo es migrar la documentación al inglés para adaptar el perfil a entornos internacionales.
 
-Cualquier feedback sobre el código o la estructura es bienvenido :)
+Cualquier feedback sobre el código o la estructura es bienvenido
